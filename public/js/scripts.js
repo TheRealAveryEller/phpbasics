@@ -16,6 +16,6 @@ function changeText() {
             document.getElementById("theButton").innerHTML = "One more time and you're gone.";            
             break;
         default:
-            document.getElementById("theAnchor").href = "/about/culture";
+            document.getElementById("theAnchor").href = "/";
     }
 }

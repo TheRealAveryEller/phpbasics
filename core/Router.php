@@ -23,9 +23,28 @@ class Router {
         $this->routes['POST'][$uri] = $controller;
     }
 
+    
+    // explode(<%splitOn>, <thing to explode>)
+    // will break up string at every instance of %splitOn and place the seperated sections
+    // into an array
+    // ... is splat operator. if you have array and pass it to function with this operator,
+    // each item in the array will be converted into arguments
+    // explode splits a string into an array, and ... turns those elements into arguments
     public function direct($uri, $requestType) {
-        if(array_key_exists($uri, $this->routes[$requestType]))
-            return $this->routes[$requestType][$uri];
+        if(array_key_exists($uri, $this->routes[$requestType])) {
+            return $this->callAction(
+                ...explode('@', $this->routes[$requestType][$uri])
+            );
+        }
+            
         throw new Exception('No Route Defined');
+    }
+
+    protected function callAction($controller, $action) {
+        $controller = new $controller;
+        if(!method_exists($controller, $action)) {
+            throw new Exception("{$controller} does not respond to the {$action} action");
+        }
+        return $controller->$action();
     }
 }
